@@ -1,8 +1,10 @@
 #include <cstdlib>
 #include <iostream>
+#include "tree.h"
 using namespace std;
 int main(int argc, char *argv[]) {
-    int date[]={5,8,7,6,5,3};
+    Tree<int>* homework= new Tree<int>();
+    homework->Main();
     system("pause");
     return EXIT_SUCCESS;
 }
