@@ -1,12 +1,14 @@
 #ifndef ITERATOR_H
 #define ITERATOR_H
-#include "stack.h"
+#include <stack>
+#include "node.h"
+using namespace std;
 template <typename T>
 class Iterator {
     private:
         Node<T>* current;
         Node<T>* temp;
-        Stack<T>* stack_nodes;
+        stack<Node<T>*> stack_nodes;
     public:
         Iterator();
         Iterator(Node<T>* node);
@@ -20,7 +22,6 @@ template<class T> Iterator<T>::Iterator()
 {
     current=nullptr;
     temp=nullptr;
-    stack_nodes = new Stack<T>;
 }
 //Test
 template<class T> Iterator<T>::Iterator(Node<T>* node)
@@ -39,12 +40,14 @@ template<typename T> Iterator<T> Iterator<T>::operator++()
 {
     current=nullptr;
     if(temp!=nullptr){
-        stack_nodes->stack_nodes.push(temp);
-        temp=temp->left;
+        while(temp!=nullptr){
+            stack_nodes.push(temp);
+            temp=temp->left;
+        }
     }
     else{
-        current=stack_nodes->stack_nodes.top();
-        stack_nodes->stack_nodes.pop();
+        current=stack_nodes.top();
+        stack_nodes.pop();
         temp=current;
         temp=temp->right;
     }
@@ -54,7 +57,6 @@ template<typename T> bool Iterator<T>::operator!=(Iterator<T> node)
 {
     if (this->current==node.temp)
     {
-        delete stack_nodes;
         return false;
     }
     else{

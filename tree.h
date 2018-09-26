@@ -8,24 +8,26 @@ class Tree
 {
     private:
         Node<T>* root;
-        Node<T>* InOrder_Tail;
+        int peso;
     public:
         Tree();
         ~Tree();
         void Insert(Node<T> **&pointer, T data);
+        void Delete(Node<T> **&pointer,T data);
         void PreOrder(Node<T>* root);
         void InOrder(Node<T>* root);
         void PostOrder(Node<T>* root);
+        void Peso(Node<T>* root, T data,T ubicado);
         void Main();
         Iterator<T> begin();
         Iterator<T> end();
 };
 template<class T> Tree<T>::Tree(){
     root=nullptr;
-    InOrder_Tail=nullptr;
+    peso=0;
 }
 template<class T> Tree<T>::~Tree(){
-    root=nullptr;
+    ////////////////
 }
 template<class T> void Tree<T>::Main(){
     int opcion;
@@ -41,7 +43,8 @@ template<class T> void Tree<T>::Main(){
         cout << "4) Imprimir en InOrder" << endl;
         cout << "5) Imprimir en PostOrder" << endl;
         cout << "6) Iterador en InOrder" << endl;
-        cout << "7) Salir" <<endl;
+        cout << "7) Peso del nodo" <<endl;
+        cout << "8) Salir" <<endl;
         cout << "Eliga el numero respectivo a lo que desea hacer:";
         cin >> opcion;
         switch(opcion){
@@ -50,6 +53,17 @@ template<class T> void Tree<T>::Main(){
             cin >> date;
             pointer=&root;
             Insert(pointer,date);
+            pointer=nullptr;
+            system("cls");
+            cout << "InOrder:" <<endl;
+            InOrder(root);
+            cout << endl;
+            break;
+        case 2:
+            cout << "Ingrese el numero que desea eliminar: ";
+            cin >> date;
+            pointer=&root;
+            Delete(pointer,date);
             pointer=nullptr;
             system("cls");
             cout << "InOrder:" <<endl;
@@ -85,12 +99,24 @@ template<class T> void Tree<T>::Main(){
             cout << *ite;
             cout << endl;
             break;
+        case 7:
+            system("cls");
+            cout << "InOrder:" <<endl;
+            InOrder(root);
+            cout << endl;
+            cout << "Ingrese el numero del nodo que desea saber su peso: " << endl;
+            cin >> date;
+            cout << "El peso del nodo seleccionado es: ";
+            Peso(root,date,false);
+            cout << peso << endl;
+            peso=0;
+            break;
         default:
             system("cls");
             break;
         }
     }
-    while(opcion!=7);
+    while(opcion!=8);
 }
 template<class T> void Tree<T>::Insert(Node<T> **&pointer,T data){
     if(*pointer==nullptr){
@@ -104,6 +130,48 @@ template<class T> void Tree<T>::Insert(Node<T> **&pointer,T data){
     else if(data > (*pointer)->data){
         pointer=&(*pointer)->right;
         Insert(pointer,data);
+    }
+}
+template<class T> void Tree<T>::Delete(Node<T> **&pointer,T data){
+    if(*pointer==nullptr){
+        return;
+    }
+    else if((*pointer)->data==data){
+        Node<T>** temp=pointer;
+        if((*pointer)->left!=nullptr && (*pointer)->right!=nullptr){
+                temp=&(*temp)->right;
+            while((*temp)->left!=nullptr){
+                temp=&(*temp)->left;
+            }
+            Node<T>** aux=&(*temp)->right;
+            (*pointer)->data=(*temp)->data;
+            delete *temp;
+            *temp=*aux;
+        }
+        else if((*pointer)->left!=nullptr || (*pointer)->right!=nullptr){
+            if((*pointer)->left!=nullptr){
+                temp=&(*pointer)->left;
+                delete *pointer;
+                *pointer=*temp;
+            }
+            else{
+                temp=&(*pointer)->right;
+                delete *pointer;
+                *pointer=*temp;
+            }
+        }
+        else if((*pointer)->left==nullptr && (*pointer)->right==nullptr){
+           delete *pointer;
+           *pointer=nullptr;
+        }
+    }
+    else if(data < (*pointer)->data){
+        pointer=&(*pointer)->left;
+        Delete(pointer,data);
+    }
+    else if(data > (*pointer)->data){
+        pointer=&(*pointer)->right;
+        Delete(pointer,data);
     }
 }
 template<class T> void Tree<T>::PreOrder(Node<T>* root){
@@ -124,7 +192,6 @@ template<class T> void Tree<T>::InOrder(Node<T>* root){
     else{
         InOrder(root->left);
         cout << root->data << " - ";
-        InOrder_Tail=root;
         InOrder(root->right);
     }
 }
@@ -140,6 +207,23 @@ template<class T> void Tree<T>::PostOrder(Node<T>* root){
     }
 }
 
+template<class T> void Tree<T>::Peso(Node<T>* root,T data,T ubicado){
+    if(root==nullptr){
+        return;
+    }
+    else if(root->data==data || ubicado==true){
+        peso++;
+        ubicado=true;
+        Peso(root->left,data,ubicado);
+        Peso(root->right,data,ubicado);
+    }
+    else if(data < root->data){
+        Peso(root->left,data,ubicado);
+    }
+    else if(data > root->data){
+        Peso(root->right,data,ubicado);
+    }
+}
 template<typename T> Iterator<T> Tree<T>::begin()
 {
     Iterator<T> ite(root);
@@ -147,7 +231,11 @@ template<typename T> Iterator<T> Tree<T>::begin()
 }
 template<typename T> Iterator<T> Tree<T>::end()
 {
-    Iterator<T> ite(InOrder_Tail);
+    Node<T>* temp=root;
+    while(temp->right!=nullptr){
+        temp=temp->right;
+    }
+    Iterator<T> ite(temp);
     return ite;
 }
 #endif // TREE_H
