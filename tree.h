@@ -12,6 +12,7 @@ class Tree
     public:
         Tree();
         ~Tree();
+        void killtree(Node<T>* root);
         void Insert(Node<T> **&pointer, T data);
         void Delete(Node<T> **&pointer,T data);
         void PreOrder(Node<T>* root);
@@ -27,7 +28,17 @@ template<class T> Tree<T>::Tree(){
     peso=0;
 }
 template<class T> Tree<T>::~Tree(){
-    ////////////////
+    killtree(root);
+}
+template<class T> void Tree<T>::killtree(Node<T>* root){
+    if(root==nullptr){
+        return;
+    }
+    else{
+        killtree(root->left);
+        killtree(root->right);
+        delete root;
+    }
 }
 template<class T> void Tree<T>::Main(){
     int opcion;
@@ -44,7 +55,8 @@ template<class T> void Tree<T>::Main(){
         cout << "5) Imprimir en PostOrder" << endl;
         cout << "6) Iterador en InOrder" << endl;
         cout << "7) Peso del nodo" <<endl;
-        cout << "8) Salir" <<endl;
+        cout << "8) Destruir Arbol" <<endl;
+        cout << "9) Salir" <<endl;
         cout << "Eliga el numero respectivo a lo que desea hacer:";
         cin >> opcion;
         switch(opcion){
@@ -91,13 +103,18 @@ template<class T> void Tree<T>::Main(){
         case 6:
             system("cls");
             cout << "Iterator-InOrder:" <<endl;
-            for (ite = begin(); ite!=end(); ++ite) {
+            if(root!=nullptr){
+                for (ite = begin(); ite!=end(); ++ite) {
                 if(*ite!=0){
                     cout << *ite << " - ";
                 }
+                }
+                cout << *ite;
+                cout << endl;
             }
-            cout << *ite;
-            cout << endl;
+            else{
+                cout << "El arbol esta vacio, no se puede iterar" << endl;
+            }
             break;
         case 7:
             system("cls");
@@ -111,12 +128,18 @@ template<class T> void Tree<T>::Main(){
             cout << peso << endl;
             peso=0;
             break;
+        case 8  :
+            system("cls");
+            killtree(root);
+            root=nullptr;
+            cout << "Arbol eliminado con exito" << endl;
+            break;
         default:
             system("cls");
             break;
         }
     }
-    while(opcion!=8);
+    while(opcion!=9);
 }
 template<class T> void Tree<T>::Insert(Node<T> **&pointer,T data){
     if(*pointer==nullptr){
@@ -238,4 +261,5 @@ template<typename T> Iterator<T> Tree<T>::end()
     Iterator<T> ite(temp);
     return ite;
 }
+
 #endif // TREE_H
