@@ -38,19 +38,14 @@ template<typename T> T Iterator<T>::operator*()
 }
 template<typename T> Iterator<T> Iterator<T>::operator++()
 {
-    current=nullptr;
-    if(temp!=nullptr){
-        while(temp!=nullptr){
+    while(temp!=nullptr){
             stack_nodes.push(temp);
             temp=temp->left;
         }
-    }
-    else{
-        current=stack_nodes.top();
-        stack_nodes.pop();
-        temp=current;
-        temp=temp->right;
-    }
+    current=stack_nodes.top();
+    stack_nodes.pop();
+    temp=current;
+    temp=temp->right;
     return *this;
 }
 template<typename T> bool Iterator<T>::operator!=(Iterator<T> node)
