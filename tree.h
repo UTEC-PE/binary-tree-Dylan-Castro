@@ -2,6 +2,7 @@
 #define TREE_H
 #include <cstdlib>
 #include <iostream>
+#include <string>
 #include "iterator.h"
 template <typename T>
 class Tree
@@ -41,6 +42,7 @@ template<class T> void Tree<T>::killtree(Node<T>* root){
     }
 }
 template<class T> void Tree<T>::Main(){
+    string var;
     int opcion;
     int date;
     Node<T>** pointer;
@@ -58,7 +60,14 @@ template<class T> void Tree<T>::Main(){
         cout << "8) Destruir Arbol" <<endl;
         cout << "9) Salir" <<endl;
         cout << "Eliga el numero respectivo a lo que desea hacer:";
-        cin >> opcion;
+        cin >> var;
+        try{
+            opcion=stoi(var);
+        }
+        catch(...){
+            opcion=0;
+        }
+
         switch(opcion){
         case 1:
             cout << "Ingrese un numero: ";
