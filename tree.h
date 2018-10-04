@@ -19,8 +19,19 @@ class Tree
         void PreOrder(Node<T>* root);
         void InOrder(Node<T>* root);
         void PostOrder(Node<T>* root);
-        void Peso(Node<T>* root, T data,T ubicado);
+        void Peso(Node<T>* root, T data,T ubicado); // El peso es de todo el árbol
         void Main();
+
+        void insert(T data) {
+            Node<T>** pointer = &root;
+            Insert(pointer, data);
+        }
+
+        void remove(T data) {
+            Node<T>** pointer = &root;
+            Delete(pointer, data);
+        }
+
         Iterator<T> begin();
         Iterator<T> end();
 };
@@ -270,5 +281,7 @@ template<typename T> Iterator<T> Tree<T>::end()
     Iterator<T> ite(temp);
     return ite;
 }
+
+
 
 #endif // TREE_H
